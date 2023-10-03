@@ -56,7 +56,7 @@ TEST(greater, test02) {
 }
 
 TEST(greater, test03) {
-    Six num1("22"), num2("12");
+    Six num1("10100"), num2("10010");
     ASSERT_TRUE(num1 > num2);
 }
 
@@ -100,7 +100,7 @@ TEST(less, test02) {
 }
 
 TEST(less, test03) {
-    Six num1("22"), num2("12");
+    Six num1("10100"), num2("10010");
     ASSERT_FALSE(num1 < num2);
 }
 
@@ -186,7 +186,7 @@ TEST(add, test07) {
 
 TEST(sub, test01) {
     Six num1("12"), num2("10");
-    ASSERT_TRUE(num1 - num2 == "2");
+    ASSERT_TRUE(num1 - num2 == Six("2"));
 }
 
 TEST(sub, test02) {
@@ -212,6 +212,11 @@ TEST(sub, test05) {
 TEST(sub, test06) {
     Six num1("12300000000000000000000000000000000000000032320"), num2("555555555555555555");
     ASSERT_TRUE(num1 - num2 == "12255555555555555555555555555000000000000032321");
+}
+
+TEST(sub, test07) {
+    Six num1("10100"), num2("10010");
+    ASSERT_TRUE(num1 - num2 == "50");
 }
 
 int main(int argc, char **argv) {

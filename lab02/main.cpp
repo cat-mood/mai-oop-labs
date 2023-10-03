@@ -1,9 +1,11 @@
 #include "six.h"
 
 int main() {
-    Six s {'5', '3', '2'};
-    s.print(std::cout);
-    std::cout << '\n';
+    try {
+        Six a = {'4', '6', 't'};
+    } catch(const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
 
     return 0;
 }

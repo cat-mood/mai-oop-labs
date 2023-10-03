@@ -1,6 +1,22 @@
 #include "six.h"
 #include <algorithm>
 
+// Delete all zeros in the beginning of string
+void delete_zeros(std::string & s) {
+    int zeros = 0;
+    size_t i = 0;
+    while(s[i] == '0') {
+        ++zeros;
+        ++i;
+    }
+    s.erase(0, zeros);
+}
+
+// Check char for six number system
+bool isSix(char s) {
+    return (0 <= s - '0') && (s - '0' < 6);
+}
+
 Six::Six() : _size{0}, _array{nullptr} {}
 
 Six::Six(const std::initializer_list<unsigned char> & t) {
@@ -8,6 +24,7 @@ Six::Six(const std::initializer_list<unsigned char> & t) {
     _size = t.size();
     size_t i = t.size() - 1;
     for (unsigned char c : t) {
+        if (!isSix(c)) throw std::logic_error("Number must be in six-base system");
         _array[i] = c;
         i--;
     }
@@ -18,6 +35,7 @@ Six::Six(const std::string & t) {
     _size = t.size();
     size_t i = t.size() - 1;
     for (unsigned char c : t) {
+        if (!isSix(c)) throw std::logic_error("Number must be in six-base system");
         _array[i] = c;
         i--;
     }
@@ -51,14 +69,6 @@ Six::~Six() noexcept {
 void Six::swap(Six & other) noexcept {
     std::swap(_array, other._array);
     std::swap(_size, other._size);
-}
-
-std::ostream& Six::print(std::ostream& os) {
-    size_t i = _size;
-    while(i--) {
-        os << _array[i];
-    }
-    return os;
 }
 
 size_t Six::size() const noexcept {
@@ -125,7 +135,7 @@ bool Six::operator>(const Six & t) const {
 }
 
 bool Six::operator>=(const Six & t) const {
-    return (*this > t) or (*this == t);
+    return (*this > t) || (*this == t);
 }
 
 bool Six::operator<(const Six & t) const {
@@ -146,17 +156,15 @@ Six Six::operator+(const Six & t) const {
         res[i] = (res[i] - '0' + sum) % _base + '0';
     }
 
-    if (res[length - 1] == '0') {
-        res.erase(length - 1, 1);   // erase 0 in the beginning
-    }
-
     std::reverse(res.begin(), res.end());
+
+    delete_zeros(res);
 
     return Six(res);
 }
 
 Six Six::operator-(const Six & t) const {
-    if (_size < t._size) {
+    if (*this < t) {
         throw std::logic_error("Result can't be negative!");
     }
 
@@ -175,19 +183,9 @@ Six Six::operator-(const Six & t) const {
         }
     }
     res[length - 1] += _array[length - 1] - '0' - ((length == t._size) ? t._array[length - 1] - '0' : 0);
-    if (res[length - 1] - '0' < 0) {
-        throw std::logic_error("Result can't be negative!");
-    }
-    // erase zeros in the beginning
-    int zeros = 0;
-    size_t i = length - 1;
-    while(res[i] == '0') {
-        ++zeros;
-        --i;
-    }
-    res.erase(length - zeros, zeros);
 
     std::reverse(res.begin(), res.end());
+    delete_zeros(res);
 
     return Six(res);
 }

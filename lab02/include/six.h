@@ -21,7 +21,6 @@ public:
     bool operator<=(const Six & t) const;
     Six operator+(const Six & t) const;
     Six operator-(const Six & t) const;
-    std::ostream& print(std::ostream& os);
     size_t size() const noexcept;
     unsigned char* array() const noexcept;
     virtual ~Six() noexcept;
