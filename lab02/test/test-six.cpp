@@ -201,6 +201,7 @@ TEST(sub, test03) {
 
 TEST(sub, test04) {
     Six num1("24232"), num2("24232");
+    std::cout << num1 - num2 << '\n';
     ASSERT_TRUE(num1 - num2 == "0");
 }
 
