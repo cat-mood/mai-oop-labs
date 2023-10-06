@@ -10,9 +10,7 @@ public:
     Six(const std::string & t);
     Six(const Six & other);
     Six(Six&& other) noexcept;
-    void swap(Six & other) noexcept;
     bool operator==(const Six & t) const;
-    bool operator==(const std::string & t) const;
     bool operator!=(const Six & t) const;
     bool operator!=(const std::string & t) const;
     bool operator>(const Six & t) const;
@@ -20,7 +18,10 @@ public:
     bool operator<(const Six & t) const;
     bool operator<=(const Six & t) const;
     Six operator+(const Six & t) const;
+    Six& operator+=(const Six & t);
     Six operator-(const Six & t) const;
+    Six& operator-=(const Six & t);
+    Six& operator=(const Six & t);
     size_t size() const noexcept;
     unsigned char* array() const noexcept;
     virtual ~Six() noexcept;

@@ -1,7 +1,7 @@
 #include "six.h"
 #include <algorithm>
 
-// Check char for six number system
+// Check char for six-base number system
 bool isSix(char s) {
     return (0 <= s - '0') && (s - '0' < 6);
 }
@@ -67,11 +67,6 @@ Six::~Six() noexcept {
     }
 }
 
-void Six::swap(Six & other) noexcept {
-    std::swap(_array, other._array);
-    std::swap(_size, other._size);
-}
-
 size_t Six::size() const noexcept {
     return _size;
 }
@@ -96,20 +91,6 @@ bool Six::operator==(const Six & t) const {
         if (_array[i] != t._array[i]) {
             return false;
         }
-    }
-    return true;
-}
-
-bool Six::operator==(const std::string & t) const {
-    if (_size != t.size()) {
-        return false;
-    }
-    size_t i = _size - 1;
-    for (char c : t) {
-        if (c != _array[i]) {
-            return false;
-        }
-        --i;
     }
     return true;
 }
@@ -162,6 +143,11 @@ Six Six::operator+(const Six & t) const {
     return Six(res);
 }
 
+Six& Six::operator+=(const Six & t) {
+    *this = *this + t;
+    return *this;
+}
+
 Six Six::operator-(const Six & t) const {
     if (*this < t) {
         throw std::logic_error("Result can't be negative!");
@@ -186,4 +172,23 @@ Six Six::operator-(const Six & t) const {
     std::reverse(res.begin(), res.end());
 
     return Six(res);
+}
+
+Six& Six::operator-=(const Six & t) {
+    *this = *this - t;
+    return *this;
+}
+
+Six& Six::operator=(const Six & t) {
+    if (_size > 0) {
+        delete[] _array;
+    }
+    _size = t._size;
+    _array = new unsigned char[_size];
+
+    for (size_t i = 0; i < _size; ++i) {
+        _array[i] = t._array[i];
+    }
+
+    return *this;
 }
