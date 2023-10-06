@@ -28,7 +28,7 @@ public:
 private:
     size_t _size;
     unsigned char* _array; // in reversed order
-    const int _base = 6;
+    static const int _base = 6;
 };
 
 std::ostream& operator<<(std::ostream & os, const Six & t);
