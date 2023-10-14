@@ -2,7 +2,10 @@
 
 int main() {
     Six s{'0', '0', '0', '0', '0'};
-    std::cout << s << '\n';
+    Six t;
+    std::cout << s + t << '\n';
+
+    
 
     return 0;
 }

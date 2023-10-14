@@ -11,6 +11,15 @@ TEST(eq, test02) {
     ASSERT_FALSE(num1 == num2);
 }
 
+TEST(eq, test03) {
+    Six num1, num2("0");
+    ASSERT_FALSE(num1 == num2);
+}
+
+TEST(eq, test04) {
+    Six num1, num2;
+    ASSERT_TRUE(num1 == num2);
+}
 
 
 TEST(not_eq, test01) {
@@ -23,6 +32,15 @@ TEST(not_eq, test02) {
     ASSERT_TRUE(num1 != num2);
 }
 
+TEST(not_eq, test03) {
+    Six num1, num2("0");
+    ASSERT_TRUE(num1 != num2);
+}
+
+TEST(not_eq, test04) {
+    Six num1, num2;
+    ASSERT_FALSE(num1 != num2);
+}
 
 
 TEST (greater, test01) {
@@ -43,6 +61,11 @@ TEST(greater, test03) {
 TEST(greater, test04) {
     Six num1("10"), num2("1220");
     ASSERT_FALSE(num1 > num2);
+}
+
+TEST(greater, test05) {
+    Six num1, num2("1");
+    ASSERT_TRUE(num2 > num1);
 }
 
 
@@ -67,6 +90,11 @@ TEST(greater_or_eq, test04) {
     ASSERT_FALSE(num1 >= num2);
 }
 
+TEST(greater_or_eq, test05) {
+    Six num1, num2("1");
+    ASSERT_TRUE(num2 >= num1);
+}
+
 
 
 TEST(less, test01) {
@@ -89,6 +117,11 @@ TEST(less, test04) {
     ASSERT_TRUE(num1 < num2);
 }
 
+TEST(less, test05) {
+    Six num1, num2("1");
+    ASSERT_TRUE(num1 < num2);
+}
+
 
 
 TEST(less_or_eq, test01) {
@@ -108,6 +141,11 @@ TEST(less_or_eq, test03) {
 
 TEST(less_or_eq, test04) {
     Six num1("10"), num2("1220");
+    ASSERT_TRUE(num1 <= num2);
+}
+
+TEST(less_or_eq, test05) {
+    Six num1, num2("1");
     ASSERT_TRUE(num1 <= num2);
 }
 
@@ -148,12 +186,29 @@ TEST(add, test07) {
     ASSERT_TRUE(num1 + num2 == Six("1352514303240352040452400454500042505143154150231"));
 }
 
+TEST(add, test08) {
+    Six num1, num2("23");
+    ASSERT_TRUE(num1 + num2 == Six("23"));
+}
+
 
 
 TEST(asgn_add, test01) {
     Six num1("12543125412154215421541251432215"), num2("1352514303240352023505231042301423043201502314012");
     num1 += num2;
     ASSERT_TRUE(num1 == Six("1352514303240352040452400454500042505143154150231"));
+}
+
+TEST(asgn_add, test02) {
+    Six num1, num2("23");
+    num1 += num2;
+    ASSERT_TRUE(num1 == Six("23"));
+}
+
+TEST(asgn_add, test03) {
+    Six num1, num2("23");
+    num2 += num1;
+    ASSERT_TRUE(num2 == Six("23"));
 }
 
 
@@ -194,11 +249,28 @@ TEST(sub, test07) {
     ASSERT_TRUE(num1 - num2 == Six("50"));
 }
 
+TEST(sub, test08) {
+    Six num1("100"), num2;
+    ASSERT_TRUE(num1 - num2 == Six("100"));
+}
+
 
 TEST(asgn_sub, test01) {
     Six num1("12300000000000000000000000000000000000000032320"), num2("555555555555555555");
     num1 -= num2;
     ASSERT_TRUE(num1 == Six("12255555555555555555555555555000000000000032321"));
+}
+
+TEST(asgn_sub, test02) {
+    Six num1, num2("10");
+    num1 += num2;
+    ASSERT_TRUE(num1 == Six("10"));
+}
+
+TEST(asgn_sub, test03) {
+    Six num1, num2("10");
+    num2 += num1;
+    ASSERT_TRUE(num2 == Six("10"));
 }
 
 
