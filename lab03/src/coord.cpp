@@ -1,8 +1,11 @@
 #include "coord.h"
+#include <cmath>
+
+const double EPS = 1e-7;
 
 bool operator==(Coord x, Coord y) noexcept {
-    return (std::fabs(x.first - y.first) < std::numeric_limits<double>::epsilon()) 
-    && (std::fabs(x.second - y.second) < std::numeric_limits<double>::epsilon());
+    return (std::fabs(x.first - y.first) < EPS) 
+    && (std::fabs(x.second - y.second) < EPS);
 }
 
 std::ostream& operator<<(std::ostream& os, const Coord & c) {

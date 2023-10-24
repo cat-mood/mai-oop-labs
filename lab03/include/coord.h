@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cmath>
-#include <limits>
 #include <iostream>
 
 typedef std::pair<double, double> Coord;

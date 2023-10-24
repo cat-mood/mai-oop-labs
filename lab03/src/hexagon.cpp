@@ -1,8 +1,10 @@
 #include "hexagon.h"
 #include <cmath>
 
+const double EPS = 1e-7;
+
 static bool is_eq(double x, double y) noexcept {
-    return (std::fabs(x - y) < std::numeric_limits<double>::epsilon());
+    return std::fabs(x - y) < EPS;
 }
 
 std::ostream& operator<<(std::ostream& os, const Hexagon & h) {
