@@ -67,8 +67,8 @@ std::ostream& operator<<(std::ostream& os, const Octagon & o) {
     return os;
 }
 
-std::istream& operator>>(std::istream& is, const Octagon & o) {
-    for (Coord elem : o._vertices) {
+std::istream& operator>>(std::istream& is, Octagon & o) {
+    for (Coord & elem : o._vertices) {
         is >> elem;
     }
     return is;

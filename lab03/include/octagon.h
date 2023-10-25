@@ -3,9 +3,9 @@
 #include "coord.h"
 #include <vector>
 
-class Octagon : Figure {
+class Octagon : public Figure {
     friend std::ostream& operator<<(std::ostream& os, const Octagon & o);
-    friend std::istream& operator>>(std::istream& is, const Octagon & o);
+    friend std::istream& operator>>(std::istream& is, Octagon & o);
 public:
     Octagon();
     Octagon(const Octagon & o);

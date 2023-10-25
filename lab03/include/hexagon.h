@@ -2,7 +2,7 @@
 #include "figure.h"
 #include <vector>
 
-class Hexagon : Figure {
+class Hexagon : public Figure {
     friend std::ostream& operator<<(std::ostream& os, const Hexagon & h);
     friend std::istream& operator>>(std::istream& is, Hexagon & h);
 public:
