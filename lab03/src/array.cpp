@@ -62,6 +62,14 @@ void Array::remove(size_t idx) {
     _data = new_data;
 }
 
-Figure** Array::get_data() {
-    return _data;
+void Array::print_centers() const {
+    for (size_t i = 0; i < _size; ++i) {
+        std::cout << _data[i]->get_center() << " ";
+    }
+}
+
+void Array::print_areas() const {
+    for (size_t i = 0; i < _size; ++i) {
+        std::cout << (double) *_data[i] << " ";
+    }
 }

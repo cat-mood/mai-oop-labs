@@ -10,7 +10,8 @@ public:
     void remove(size_t idx);
     double get_total_area() const;
     size_t get_size() const noexcept;
-    Figure** get_data();
+    void print_centers() const;
+    void print_areas() const;
 private:
     Figure** _data;
     size_t _size;
