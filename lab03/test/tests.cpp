@@ -2,6 +2,7 @@
 #include "hexagon.h"
 #include "octagon.h"
 #include "triangle.h"
+#include "array.h"
 #include <gtest/gtest.h>
 #include <cmath>
 
@@ -1128,6 +1129,97 @@ TEST(tri_op_move, test03) {
     Triangle t3(t2);
     t1 = std::move(t2);
     ASSERT_TRUE(t1 == t3);
+}
+
+/*--------------------------------------ARRAY_GET_TOTAL_AREA------------------------------------------------------*/
+
+TEST(array_get_total_area, test01) {
+    Triangle t = {
+        Coord(4.62, -0.2333234), Coord(-0.07921730041284514, -3.4535822266260965), Coord(5.059217300412844, -5.913094373373904)
+    };
+    Octagon o = {
+        Coord(2.2, 0.0), Coord(1.5556349186104048, 1.5556349186104046), Coord(1.3471114790620887e-16, 2.2), 
+        Coord(-1.5556349186104046, 1.5556349186104048), Coord(-2.2, 2.6942229581241775e-16), 
+        Coord(-1.555634918610405, -1.5556349186104046), Coord(-4.0413344371862655e-16, -2.2), 
+        Coord(1.5556349186104044, -1.555634918610405)
+    };
+    Hexagon h = {
+        Coord(2, 0), Coord(1, 1.7320508075688772), Coord(-1, 1.7320508075688772), Coord(-2, 0),
+        Coord(-1, -1.7320508075688772), Coord(1, -1.7320508075688772)
+    };
+    Array a = {&t, &o, &h};
+    ASSERT_TRUE(a.get_total_area() == ((double) t + (double) o + (double) h));
+}
+
+TEST(array_get_total_area, test02) {
+    Array a;
+    ASSERT_TRUE(a.get_total_area() == 0);
+}
+
+TEST(array_get_total_area, test03) {
+    Triangle t1 = {
+        Coord(4.62, -0.2333234), Coord(-0.07921730041284514, -3.4535822266260965), Coord(5.059217300412844, -5.913094373373904)
+    };
+    Triangle t2 = {
+        Coord(2.2, 0.0), Coord(-1.0999999999999996, 1.9052558883257653), Coord(-1.100000000000001, -1.9052558883257646)
+    };
+    Triangle t3 = {
+        Coord(100.0, 213.0), Coord(-244.0233206221807, -79.22004323127496), Coord(181.0583206221806, -231.04295676872505)
+    };
+    Array a = {&t1, &t2, &t3};
+    ASSERT_TRUE(a.get_total_area() == ((double) t1 + (double) t2 + (double) t3));
+}
+
+/*--------------------------------------ARRAY_REMOVE-------------------------------------------------------------*/
+
+TEST(array_remove, test01) {
+    Triangle t = {
+        Coord(4.62, -0.2333234), Coord(-0.07921730041284514, -3.4535822266260965), Coord(5.059217300412844, -5.913094373373904)
+    };
+    Octagon o = {
+        Coord(2.2, 0.0), Coord(1.5556349186104048, 1.5556349186104046), Coord(1.3471114790620887e-16, 2.2), 
+        Coord(-1.5556349186104046, 1.5556349186104048), Coord(-2.2, 2.6942229581241775e-16), 
+        Coord(-1.555634918610405, -1.5556349186104046), Coord(-4.0413344371862655e-16, -2.2), 
+        Coord(1.5556349186104044, -1.555634918610405)
+    };
+    Hexagon h = {
+        Coord(2, 0), Coord(1, 1.7320508075688772), Coord(-1, 1.7320508075688772), Coord(-2, 0),
+        Coord(-1, -1.7320508075688772), Coord(1, -1.7320508075688772)
+    };
+    Array a = {&t, &o, &h};
+    a.remove(0);
+    ASSERT_TRUE(a.get_size() == 2);
+    ASSERT_TRUE(a.get_total_area() == ((double) o + (double) h));
+}
+
+TEST(array_remove, test02) {
+    Array a;
+    ASSERT_ANY_THROW(a.remove(2));
+}
+
+TEST(array_remove, test03) {
+    Triangle t = {
+        Coord(4.62, -0.2333234), Coord(-0.07921730041284514, -3.4535822266260965), Coord(5.059217300412844, -5.913094373373904)
+    };
+    Array a = {&t};
+    ASSERT_ANY_THROW(a.remove(1));
+}
+
+TEST(array_remove, test04) {
+    Triangle t1 = {
+        Coord(4.62, -0.2333234), Coord(-0.07921730041284514, -3.4535822266260965), Coord(5.059217300412844, -5.913094373373904)
+    };
+    Triangle t2 = {
+        Coord(2.2, 0.0), Coord(-1.0999999999999996, 1.9052558883257653), Coord(-1.100000000000001, -1.9052558883257646)
+    };
+    Triangle t3 = {
+        Coord(100.0, 213.0), Coord(-244.0233206221807, -79.22004323127496), Coord(181.0583206221806, -231.04295676872505)
+    };
+    Array a = {&t1, &t2, &t3};
+    a.remove(0);
+    a.remove(0);
+    ASSERT_TRUE(a.get_size() == 1);
+    ASSERT_TRUE(a.get_total_area() == (double) t3);
 }
 
 int main(int argc, char **argv) {
