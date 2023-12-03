@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <exception>
 using size_t = unsigned long;
 
 namespace lab05 {
@@ -27,19 +28,64 @@ namespace lab05 {
 
         _Node* _top;
         size_t _size;
+        std::allocator_traits<Allocator>::template rebind_alloc<_Node> alloc;
+    public:
+        class Iterator {
+        public:
+            using difference_type = std::ptrdiff_t;
+            using value_type = T;
+            using pointer = T*;
+            using reference = T&;
+            using iterator_category = std::forward_iterator_tag;
+
+            Iterator(_Node* ptr);
+            ~Iterator() noexcept = default;
+            Iterator& operator++();
+            Iterator& operator--();
+            reference operator*();
+            pointer operator->();
+            bool operator==(const Iterator& other) const;
+            bool operator!=(const Iterator& other) const;
+        private:
+            _Node* cur;
+        };
+        class ConstIterator {
+        public:
+            using difference_type = std::ptrdiff_t;
+            using value_type = const T;
+            using pointer = const T*;
+            using reference = const T&;
+            using iterator_category = std::forward_iterator_tag;
+
+            ConstIterator(_Node* ptr);
+            ~ConstIterator() noexcept = default;
+            ConstIterator& operator++();
+            ConstIterator& operator--();
+            reference operator*();
+            pointer operator->();
+            bool operator==(const Iterator& other) const;
+            bool operator!=(const Iterator& other) const;
+        private:
+            _Node* cur;
+        };
+
+        Iterator begin();
+        Iterator end();
+        ConstIterator cbegin();
+        ConstIterator cend();
     };
 
     template <class T, class Allocator>
     Stack<T, Allocator>::Stack() : _top{nullptr}, _size{0} {}
     
     template <class T, class Allocator>
-    Stack<T, Allocator>::Stack(const Stack& other) : _size{other._size} {
-        _top = new _Node;
+    Stack<T, Allocator>::Stack(const Stack<T, Allocator>& other) : _size{other._size} {
+        _top = alloc.allocate(1);
         _top->val = other._top->val;
         _Node* other_cur = other._top;
         _Node* prev = _top;
         for (size_t i = 0; i < _size - 1; ++i) {
-            _Node* cur = new _Node;
+            _Node* cur = alloc.allocate(1);
             other_cur = other_cur->next;
             cur->val = other_cur->val;
             prev->next = cur;
@@ -48,9 +94,10 @@ namespace lab05 {
     }
 
     template <class T, class Allocator>
-    Stack<T, Allocator>::Stack(Stack&& other) noexcept {
+    Stack<T, Allocator>::Stack(Stack<T, Allocator>&& other) noexcept {
         _top = other._top;
         _size = std::move(other._size);
+        other._size = 0;
     }
 
     template <class T, class Allocator>
@@ -59,7 +106,75 @@ namespace lab05 {
         for (size_t i = 0; i < _size; ++i) {
             _Node* cur = next;
             next = next->next;
-            delete cur;
+            alloc.deallocate(cur, 1);
         }
+    }
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>& Stack<T, Allocator>::operator=(const Stack<T, Allocator>& other) {
+        _size = other._size;
+        _top = alloc.allocate(1);
+        _top->val = other._top->val;
+        _Node* other_cur = other._top;
+        _Node* prev = _top;
+        for (size_t i = 0; i < _size - 1; ++i) {
+            _Node* cur = alloc.allocate(1);
+            other_cur = other_cur->next;
+            cur->val = other_cur->val;
+            prev->next = cur;
+            prev = cur;
+        }
+    }
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>& Stack<T, Allocator>::operator=(Stack<T, Allocator>&& other) noexcept {
+        _top = other._top;
+        _size = other._size;
+    }
+
+    template <class T, class Allocator>
+    const T& Stack<T, Allocator>::top() const {
+        return _top->val;
+    }
+
+    template <class T, class Allocator>
+    bool Stack<T, Allocator>::empty() const {
+        return _size == 0;
+    }
+
+    template <class T, class Allocator>
+    size_t Stack<T, Allocator>::size() const {
+        return _size;
+    }
+
+    template <class T, class Allocator>
+    void Stack<T, Allocator>::push(const T& value) {
+        _Node* new_el = alloc.allocate(1);
+        new (&new_el->val) T();
+        new_el->val = value;
+        new_el->next = _top;
+        _top = new_el;
+        ++_size;
+    }
+
+    template <class T, class Allocator>
+    void Stack<T, Allocator>::push(T&& value) noexcept {
+        _Node* new_el = alloc.allocate(1);
+        new (&new_el->val) T();
+        new_el->val = value;
+        new_el->next = _top;
+        _top = new_el;
+        ++_size;
+    }
+
+    template <class T, class Allocator>
+    void Stack<T, Allocator>::pop() {
+        if (_size <= 0) {
+            throw std::logic_error("Stack is empty");
+        }
+        _Node* old = _top;
+        _top = _top->next;
+        alloc.deallocate(old, 1);
+        --_size;
     }
 }
