@@ -41,14 +41,14 @@ namespace lab05 {
             Iterator(_Node* ptr);
             ~Iterator() noexcept = default;
             Iterator& operator++();
-            Iterator& operator--();
             reference operator*();
             pointer operator->();
             bool operator==(const Iterator& other) const;
             bool operator!=(const Iterator& other) const;
         private:
-            _Node* cur;
+            _Node* _cur;
         };
+
         class ConstIterator {
         public:
             using difference_type = std::ptrdiff_t;
@@ -60,13 +60,12 @@ namespace lab05 {
             ConstIterator(_Node* ptr);
             ~ConstIterator() noexcept = default;
             ConstIterator& operator++();
-            ConstIterator& operator--();
             reference operator*();
             pointer operator->();
-            bool operator==(const Iterator& other) const;
-            bool operator!=(const Iterator& other) const;
+            bool operator==(const ConstIterator& other) const;
+            bool operator!=(const ConstIterator& other) const;
         private:
-            _Node* cur;
+            _Node* _cur;
         };
 
         Iterator begin();
@@ -74,6 +73,10 @@ namespace lab05 {
         ConstIterator cbegin();
         ConstIterator cend();
     };
+
+    /*----------------------Implementation-------------------------------------*/
+
+    /*----------------------Stack--------------------------*/
 
     template <class T, class Allocator>
     Stack<T, Allocator>::Stack() : _top{nullptr}, _size{0} {}
@@ -176,5 +179,91 @@ namespace lab05 {
         _top = _top->next;
         alloc.deallocate(old, 1);
         --_size;
+    }
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>::Iterator Stack<T, Allocator>::begin() {
+        Iterator iter(_top);
+        return iter;
+    }
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>::Iterator Stack<T, Allocator>::end() {
+        Iterator iter(nullptr);
+        return iter;
+    }
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>::ConstIterator Stack<T, Allocator>::cbegin() {
+        ConstIterator iter(_top);
+        return iter;
+    }
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>::ConstIterator Stack<T, Allocator>::cend() {
+        ConstIterator iter(nullptr);
+        return iter;
+    }
+
+    /*------------------Iterator-----------------------------*/
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>::Iterator::Iterator(_Node* ptr) : _cur{ptr} {}
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>::Iterator& Stack<T, Allocator>::Iterator::operator++() {
+        _cur = _cur->next;
+        return *this;
+    }
+
+    template <class T, class Allocator>
+    lab05::Stack<T, Allocator>::Iterator::reference Stack<T, Allocator>::Iterator::operator*() {
+        return _cur->val;
+    }
+
+    template <class T, class Allocator>
+    lab05::Stack<T, Allocator>::Iterator::pointer Stack<T, Allocator>::Iterator::operator->() {
+        return &_cur->val;
+    }
+
+    template <class T, class Allocator>
+    bool Stack<T, Allocator>::Iterator::operator==(const Iterator& other) const {
+        return _cur == other._cur;
+    }
+
+    template <class T, class Allocator>
+    bool Stack<T, Allocator>::Iterator::operator!=(const Iterator& other) const {
+        return _cur != other._cur;
+    }
+
+    /*---------------ConstIterator------------------------------*/
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>::ConstIterator::ConstIterator(_Node* ptr) : _cur{ptr} {}
+
+    template <class T, class Allocator>
+    Stack<T, Allocator>::ConstIterator& Stack<T, Allocator>::ConstIterator::operator++() {
+        _cur = _cur->next;
+        return *this;
+    }
+
+    template <class T, class Allocator>
+    lab05::Stack<T, Allocator>::ConstIterator::reference Stack<T, Allocator>::ConstIterator::operator*() {
+        return _cur->val;
+    }
+
+    template <class T, class Allocator>
+    lab05::Stack<T, Allocator>::ConstIterator::pointer Stack<T, Allocator>::ConstIterator::operator->() {
+        return &_cur->val;
+    }
+
+    template <class T, class Allocator>
+    bool Stack<T, Allocator>::ConstIterator::operator==(const ConstIterator& other) const {
+        return _cur == other._cur;
+    }
+
+    template <class T, class Allocator>
+    bool Stack<T, Allocator>::ConstIterator::operator!=(const ConstIterator& other) const {
+        return _cur != other._cur;
     }
 }

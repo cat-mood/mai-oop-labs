@@ -100,6 +100,28 @@ TEST(stack_stl, test04) {
 
 /*-----------------------ITER----------------------------------------*/
 
+TEST(iter, test01) {
+    lab05::Stack<int> s;
+    for (int i = 0; i < 5; ++i) {
+        s.push(i);
+    }
+    auto iter = s.cbegin();
+    for (int i = 4; i >= 0; --i) {
+        ASSERT_EQ(*iter, i);
+        ++iter;
+    }
+    ASSERT_EQ(iter, s.cend());
+}
+
+TEST(iter, test02) {
+    lab05::Stack<int> s;
+    s.push(1);
+    auto iter = s.begin();
+    ASSERT_EQ(*iter, 1);
+    *iter = 2;
+    ASSERT_EQ(s.top(), 2);
+}
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

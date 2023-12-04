@@ -33,19 +33,8 @@ namespace lab05 {
 
         template <typename U, typename... Args>
         void construct(U* p, Args&&...args) {
-            ::new (static_cast<void*>(p)) T(std::forward<Args>(args)...);
+            new (p) U(std::forward<Args>(args)...);
         }
-
-        // template <typename U>
-        // void construct(U* ptr)
-        // noexcept(std::is_nothrow_default_constructible<U>::value) {
-        //     ::new(static_cast<void*>(ptr)) U;
-        // }
-
-        // template <typename U, typename...Args>
-        // void construct(U* ptr, Args&&... args) {
-        //     a_t::construct(static_cast<Allocator<T>&>(*this), ptr, std::forward<Args>(args)...);
-        // }
 
         void destroy(pointer p) {
             p->~T();
