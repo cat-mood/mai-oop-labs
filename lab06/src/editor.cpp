@@ -2,7 +2,7 @@
 
 using namespace lab06;
 
-Editor::Editor(int distance) : _distance{distance} {}
+Editor::Editor() {}
 
 Editor::~Editor() {
     for (auto [coord, npc] : _map) {
@@ -110,7 +110,8 @@ int Editor::count_npc() const {
     return _names.size();
 }
 
-void Editor::fight() {
+void Editor::fight(int _distance) {
+    if (_distance < 0) throw std::logic_error("Distance can't be negative");
     std::unordered_set<NPC*> died;
     FileObserver fobs(_map, "log.txt");
     OutputObserver oobs(_map);
