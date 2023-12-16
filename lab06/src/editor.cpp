@@ -4,7 +4,11 @@ using namespace lab06;
 
 Editor::Editor(int distance) : _distance{distance} {}
 
-Editor::~Editor() {}
+Editor::~Editor() {
+    for (auto [coord, npc] : _map) {
+        delete npc;
+    }
+}
 
 void Editor::place(NPC* npc, const Coord& coord) {
     if (_map.find(coord) != _map.end()) {
@@ -108,6 +112,8 @@ int Editor::count_npc() const {
 
 void Editor::fight() {
     std::unordered_set<NPC*> died;
+    FileObserver fobs(_map, "log.txt");
+    OutputObserver oobs(_map);
     for (auto [acoord, attacker] : _map) {
         for (auto [dcoord, defender] : _map) {
             if (attacker == defender) continue;
@@ -115,10 +121,16 @@ void Editor::fight() {
             && (distance(attacker->coord(), defender->coord()) <= _distance);
             if (success) {
                 died.insert(defender);
+                defender->killer_name() = attacker->name();
             }
         }
     }
     for (auto npc : died) {
+        npc->notify();
         this->delete_NPC(npc);
+    }
+    for (auto [coord, npc] : _map) {
+        npc->detach(&fobs);
+        npc->detach(&oobs);
     }
 }

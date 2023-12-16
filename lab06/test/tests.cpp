@@ -15,6 +15,9 @@ TEST(factory, init) {
     ASSERT_FALSE(knight == nullptr);
     NPC* bear = f.create(BEAR, "bear_name");
     ASSERT_FALSE(bear == nullptr);
+    delete orc;
+    delete bear;
+    delete knight;
 }
 
 TEST(factory, exception) {
