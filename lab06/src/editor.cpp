@@ -2,29 +2,25 @@
 
 using namespace lab06;
 
-Editor::Editor() {
-    for (int i = 0; i < _height; ++i) {
-        for (int j = 0; j < _width; ++j) {
-            _map[i][j] = nullptr;
-        }
-    }
-}
+Editor::Editor(int distance) : _distance{distance} {}
 
 Editor::~Editor() {}
 
 void Editor::place(NPC* npc, const Coord& coord) {
-    if (_map[coord.first][coord.second] != nullptr) {
+    if (_map.find(coord) != _map.end()) {
         throw std::logic_error("There is already NPC at this coordinates");
     }
-    _map[coord.first][coord.second] = npc;
+    npc->coord() = coord;
+    _map[coord] = npc;
 }
 
 NPC* Editor::unplace(const Coord& coord) {
-    if (_map[coord.first][coord.second] == nullptr) {
+    if (_map.find(coord) == _map.end()) {
         throw std::logic_error("There is no NPC");
     }
-    NPC* npc = _map[coord.first][coord.second];
-    _map[coord.first][coord.second] = nullptr;
+    NPC* npc = _map[coord];
+    _map.erase(coord);
+    npc->coord() = std::make_pair(-1, -1);
     return npc;
 }
 
@@ -43,6 +39,10 @@ void Editor::delete_NPC(const Coord& coord) {
     delete npc;
 }
 
+void Editor::delete_NPC(NPC* npc) {
+    this->delete_NPC(npc->coord());
+}
+
 void Editor::move_NPC(const Coord& old_c, const Coord& new_c) {
     NPC* npc = unplace(old_c);
     place(npc, new_c);
@@ -54,15 +54,10 @@ void Editor::save_to_file(const std::string& path) const {
         throw std::runtime_error("Can't open file");
     }
     file << this->count_npc() << '\n';
-    for (int i = 0; i < _width; ++i) {
-        for (int j = 0; j < _height; ++j) {
-            NPC* npc = _map[i][j];
-            if (npc == nullptr) {
-                continue;
-            }
-            file << i << ' ' << j << '\n';
-            file << npc->type() << ' ' << npc->name() << '\n';
-        }
+    for (const auto& [key, value] : _map) {
+        NPC* npc = value;
+        file << key.first << ' ' << key.second << '\n';
+        file << npc->type() << ' ' << npc->name() << '\n';
     }
     file.close();
 }
@@ -87,16 +82,11 @@ void Editor::load_from_file(const std::string& path) {
 }
 
 void Editor::print_map() const {
-    for (int i = 0; i < _width; ++i) {
-        for (int j = 0; j < _height; ++j) {
-            NPC* npc = _map[i][j];
-            if (npc == nullptr) {
-                continue;
-            }
-            std::cout << "x: " << i << " y: " << j << "\t";
-            print_NPC(npc);
-            std::cout << std::endl;
-        }
+    for (const auto& [key, value] : _map) {
+        NPC* npc = value;
+        std::cout << "x: " << key.first << " y: " << key.second << '\t';
+        print_NPC(npc);
+        std::cout << std::endl;
     }
 }
 
@@ -114,4 +104,21 @@ void Editor::print_NPC(NPC* npc) const {
 
 int Editor::count_npc() const {
     return _names.size();
+}
+
+void Editor::fight() {
+    std::unordered_set<NPC*> died;
+    for (auto [acoord, attacker] : _map) {
+        for (auto [dcoord, defender] : _map) {
+            if (attacker == defender) continue;
+            bool success = attacker->can_kill(defender) 
+            && (distance(attacker->coord(), defender->coord()) <= _distance);
+            if (success) {
+                died.insert(defender);
+            }
+        }
+    }
+    for (auto npc : died) {
+        this->delete_NPC(npc);
+    }
 }

@@ -66,7 +66,41 @@ TEST(editor, file) {
     ASSERT_EQ(other.count_npc(), 100);
 }
 
+TEST(editor, fight1) {
+    Editor e(100);
+    e.create_NPC(ORC, "orc_name", std::make_pair(0, 0));
+    e.create_NPC(BEAR, "bear_name", std::make_pair(5, 5));
+    e.create_NPC(KNIGHT_ERRANT, "knight_name", std::make_pair(10, 10));
+    e.fight();
+    ASSERT_EQ(e.count_npc(), 0);
+}
 
+TEST(editor, fight2) {
+    Editor e(10);
+    e.create_NPC(ORC, "orc_name", std::make_pair(0, 0));
+    e.create_NPC(BEAR, "bear_name", std::make_pair(50, 50));
+    e.fight();
+    ASSERT_EQ(e.count_npc(), 2);
+}
+
+TEST(editor, fight3) {
+    Editor e(10);
+    e.create_NPC(ORC, "orc_name", std::make_pair(0, 0));
+    e.create_NPC(ORC, "orc2_name", std::make_pair(5, 5));
+    e.fight();
+    ASSERT_EQ(e.count_npc(), 2);
+}
+
+TEST(editor, fight4) {
+    Editor e(100);
+    e.create_NPC(ORC, "orc_name", std::make_pair(0, 0));
+    e.create_NPC(ORC, "orc2_name", std::make_pair(5, 5));
+    e.create_NPC(ORC, "orc3_name", std::make_pair(5, 0));
+    e.create_NPC(ORC, "orc4_name", std::make_pair(0, 5));
+    e.create_NPC(BEAR, "bear_name", std::make_pair(3, 3));
+    e.fight();
+    ASSERT_EQ(e.count_npc(), 4);
+}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
